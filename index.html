@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="pageWithModal">
+      <div class="body-blackout"></div>
+      <div class="popup-modal shadow" data-popup-modal="centred-modal">
+        <svg class="popup-modal__close" onclick="closeModal()" viewPort="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg"><line x1="1" y1="11" x2="11" y2="1" stroke="black" stroke-width="2"/><line x1="1" y1="1" x2="11" y2="11" stroke="black" stroke-width="2"/></svg>
+        <div class="main-body">
+          <div class="left form">
+            <h2 class="ttc">Get $10 off when you signup for </h2>
+            <h5 class="ttc">Saving,news,updates and more</h5>
+            <form id="signupform" action="">
+              <div class="form">
+                <input type="text" id="name" placeholder="Your name" name="name" required>
+                <input type="email" id="email" placeholder="Email address" name="email" required>
+                <label class="check-label">
+                  <input type="checkbox" id="subCheck" name="remember"> Check this box to receive monthly newsletter 
+                </label>
+                <div class="clearfix">
+                  <button type="submit" class="signupbtn">SIGN UP</button>
+                  <p class="privacy"><a href="#">PRIVACY POLICY</a>.</p>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="right image">
+            <img src="https://useruploads.visualwebsiteoptimizer.com/useruploads/176372/images/339bf06d957c32e3b61f79b563f229af_offerx500.png" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+
+<script>
+  // open Modal after 5 seconds in mobile
+  var isMobile = navigator.userAgentData.mobile;
+  if(isMobile){
+    setTimeout(function(){
+      openModal();
+    },5000)
+  }
+  // track mouse to open modal
+  const body = document.querySelector('body');
+  var mouseY;
+  body.addEventListener('mouseleave', (event) => {
+    mouseY = event.clientY;
+    if (mouseY < 0) {
+      openModal();
+    }
+  });
+
+  // open modal
+  function openModal(){
+    let isSignedUpForOffer = localStorage.getItem("isSignedUpForOffer");
+    const pageEl = document.querySelector('.pageWithModal');
+    if(!isSignedUpForOffer){
+      pageEl.hidden = false;
+      loadForm();
+    }else{
+      pageEl.hidden = true;
+    }
+
+    const bodyBlackout = document.querySelector('.body-blackout');
+    const popupModal = document.querySelector(`[data-popup-modal="centred-modal"]`);
+    popupModal.classList.add('is--visible');
+    bodyBlackout.classList.add('is-blacked-out');
+  }
+  
+  // close modal
+  function closeModal(){
+    const bodyBlackout = document.querySelector('.body-blackout')
+    const popupModal = document.querySelector(`[data-popup-modal="centred-modal"]`)
+    popupModal.classList.remove('is--visible')
+    bodyBlackout.classList.remove('is-blacked-out');
+    localStorage.setItem("isSignedUpForOffer", true);
+  }
+
+  function loadForm(){
+    var button = document.querySelector("button");
+    var form = document.getElementById("signupform");
+    //function Executes on click of signup button.
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      var name = document.getElementById("name").value;
+      var email = document.getElementById("email").value;
+      var subCheck = document.getElementById("subCheck").value;
+      if(!(/^[A-z ]+$/.test(name))){
+        alert('Please enter a valid Name')
+      }else if(!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))){
+        alert('Please enter a valid Email')
+      }
+      localStorage.setItem("isSignedUpForOffer", true);
+      closeModal();
+    });
+  }
+
+  function removeLocalStorage(){
+    localStorage.removeItem("isSignedUpForOffer");
+    location.reload();
+  }
+
+  function addEvent(obj, evt, fn) {
+    if (obj.addEventListener) {
+      obj.addEventListener(evt, fn, false);
+    } else if (obj.attachEvent) {
+      obj.attachEvent("on" + evt, fn);
+    }
+  }
+
+</script>
+
+
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+
+  html {
+    box-sizing: border-box;
+  }
+
+  *, *:before, *:after {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    background-color: #f6f6f6;
+    min-height: 100vh;
+    height: 100vh;
+    padding: 35px;
+    position: relative;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .ttc{
+    text-transform:uppercase;
+  }
+  .body-blackout {
+    position: absolute;
+    z-index: 1010;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.65);
+    display: none;
+  }
+  .body-blackout.is-blacked-out {
+    display: block;
+  }
+
+  .popup-trigger {
+    display: inline-block;
+  }
+
+  .popup-modal {
+    height: 465px;
+    width: 720px;
+    background: #fdd501;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 45px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 300ms ease-in-out;
+    z-index: 1011;
+  }
+  .popup-modal.is--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .popup-modal__close {
+    position: absolute;
+    font-size: 1.2rem;
+    right: 0px;
+    top: 15px;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+  }
+  .main-body{
+    display: flex;
+  }
+  .left{
+    text-align: center;
+    width: 70%;
+  }
+  .left h2{
+    margin-bottom: 5px;
+    margin-top: 0;
+  }
+  .left h5{
+    font-weight: 200;
+    letter-spacing: 4px;
+    font-size: 16px;
+    margin: 0
+  }
+  .right img{
+    width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: -50px;
+  }
+  .right.image{
+    display: flex;
+    align-items: center;
+  }
+
+  .form{
+    padding-top: 20px;
+  }
+  /* Full-width input fields */
+  input[type=text], input[type=email] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: 1px solid #ddd;	
+    
+  }
+  .check-label{
+    margin-bottom:15px;
+    font-size: 12px;
+    text-align: left;
+    display: block;
+  }
+  input[type=text]:focus, input[type=email]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+
+  /* Set a style for all buttons */
+  button {
+    background-color: #000;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+  }
+
+  button:hover {
+    opacity:1;
+  }
+
+  /* Clear floats */
+  .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  .privacy{ 
+    text-align: center;
+    width: 100%;
+    margin:0;
+    
+  }
+  .privacy a{ color: #000; font-size: 12px; text-decoration: underline; }
+  /* Change styles for cancel button and signup button on extra small screens */
+  @media screen and (max-width: 720px) {
+    .right.image{
+      display: none;
+    }
+    .left{
+      width: 100%;
+    }
+    .popup-modal {
+      height: auto;
+      width: 90%;
+      padding: 25px;
+    }
+    .signupbtn {
+      width: 100%;
+    }
+  }
+</style>
